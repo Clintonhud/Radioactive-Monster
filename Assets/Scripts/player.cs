@@ -9,13 +9,18 @@ public class player : MonoBehaviour {
 	public float forcaPulo;
 	public float velocidadeMaxima;
 
+	public bool nochao;
+
 	public int vidas;
+	public int radiacao;
 
 	public Text Textlives;
+	public Text TextRad;
 
 	void Start () 
 	{
 		Textlives.text = vidas.ToString();
+		TextRad.text = radiacao.ToString();
 	}
 	
 	// Update is called once per frame
@@ -49,18 +54,32 @@ public class player : MonoBehaviour {
 		 }
 		
 
-		if (Input.GetKeyDown(KeyCode.Space))
+		if (Input.GetKeyDown(KeyCode.Space) && nochao)
 		{
 			rigidbody.AddForce(new Vector2(0,forcaPulo));
+			GetComponent<AudioSource>().Play();
 		}
+
+		if (nochao) {
+			GetComponent<Animator>().SetBool ("pulo", false);
+		} else {
+			GetComponent<Animator>().SetBool ("pulo", true);
+		}
+
 	}
 
 	void OnCollisionEnter2D(Collision2D collision2D){
-		Debug.Log("Colidiu!");
+		if(collision2D.gameObject.CompareTag("plataformas")){
+			nochao = true;
+		}
+
+		//Debug.Log("Colidiu!"+collision2D.gameObject.tag);
 	}
 
 	void OnCollisionExit2D(Collision2D collision2D){
-		Debug.Log("Parou de colidir!");
+		if(collision2D.gameObject.CompareTag("plataformas")){
+			nochao = false;
+		}
 	}
 
 }
